@@ -7,55 +7,57 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.samay.gankmvp.R;
-import com.samay.gankmvp.mode.entity.IOS;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import org.w3c.dom.Text;
+import com.samay.gankmvp.R;
+import com.samay.gankmvp.mode.entity.All;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
- * Created by shaohua.li on 7/8/16.
+ * Created by baobao on 16/7/10.
  */
-public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
 
-    public List<IOS> iosList;
-    public Context mContext;
-    public LayoutInflater inflater;
+public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
-    public IOSAdapter(Context mContext) {
+    List<All> allList;
+
+    Context mContext;
+
+    LayoutInflater inflater;
+
+    public AllAdapter(Context mContext) {
         this.mContext = mContext;
-        iosList=new ArrayList<>();
+        allList=new ArrayList<>();
         inflater=LayoutInflater.from(mContext);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view=inflater.inflate(R.layout.item_ios,parent,false);
+        View view=inflater.inflate(R.layout.item_all,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        IOS ios=iosList.get(position);
-        holder.author.setText(ios.getWho());
-        holder.title.setText(ios.getDesc());
+        All all=allList.get(position);
+        holder.author.setText(all.getWho());
+        holder.title.setText(all.getDesc());
     }
 
     @Override
     public int getItemCount() {
-        return iosList.size();
+        return allList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.tv_ios_title)
+        @BindView(R.id.tv_all_item)
         TextView title;
-        @BindView(R.id.tv_ios_author)
+        @BindView(R.id.tv_all_author)
         TextView author;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -63,8 +65,8 @@ public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
         }
     }
 
-    public void setIosList(List<IOS> datas) {
-        this.iosList = datas;
+    public void setAllList(List<All> datas) {
+        this.allList = datas;
         notifyDataSetChanged();
     }
 }

@@ -64,7 +64,13 @@ public class AndroidAdapter extends RecyclerView.Adapter<AndroidAdapter.ViewHold
     }
 
     public void setAndroidDataList(List<Android> dataList) {
+        androidDataList.clear();
         androidDataList.addAll(dataList);
+        notifyDataSetChanged();
+    }
+
+    public void updateAllWithoutClear(List<Android> datalist){
+        androidDataList.addAll(datalist);
         notifyDataSetChanged();
     }
 }

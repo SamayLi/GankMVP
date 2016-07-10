@@ -34,7 +34,7 @@ public abstract class BaseSwipeRefreshFragment<P extends BasePresenter> extends 
 
     @Override
     public void getDataFinish() {
-
+        hideRefresh();
     }
 
     @Override

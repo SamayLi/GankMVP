@@ -47,11 +47,25 @@ public class WelfareFragment extends BaseFragment<WelfarePresenter> implements W
 
     @Override
     public void initView() {
-        StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new WelfareAdapter(getActivity().getBaseContext());
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                super.onScrolled(recyclerView, dx, dy);
+                boolean isBottom =
+                        layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1]
+                                >= adapter.getItemCount() - 4;
+                if(isBottom){
+                    mPresenter.loadMore();
+                }
+
+            }
+        });
     }
 
     @Override
@@ -63,5 +77,10 @@ public class WelfareFragment extends BaseFragment<WelfarePresenter> implements W
     public void fillDatas(List<Welfare> datas) {
         Log.d("samay@@@","datas size is "+datas.size());
         adapter.setWelfareList(datas);
+    }
+
+    @Override
+    public void fillDatasMore(List<Welfare> moreDatas) {
+        adapter.updateWelfareWithoutClear(moreDatas);
     }
 }

@@ -21,6 +21,9 @@ import rx.schedulers.Schedulers;
  */
 public class AndroidPresenter implements BasePresenter<AndroidView> {
 
+    int current_page=1;
+    final int page_size=10;
+
     private AndroidView mView;
 
 
@@ -30,7 +33,7 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
 
     @Override
     public void subscribe() {
-        load();
+
     }
 
     @Override
@@ -40,7 +43,7 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
 
     public void load() {
         InterntUtils interntUtils = new InterntUtils();
-        interntUtils.getGankAPI().getAndroids(10, 1)
+        interntUtils.getGankAPI().getAndroids(page_size, current_page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<AndroidData, List<Android>>() {
@@ -59,6 +62,7 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
             public void onError(Throwable e) {
                 Log.d("samay@@@", "e is " + e.toString());
                 Log.d("samay@@@", "loadData error");
+                mView.getDataFinished();
             }
 
             @Override
@@ -70,6 +74,7 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
                     Log.d("samay@@@@", "androids size is " + androids.size());
                     mView.fillDatas(androids);
                 }
+                mView.getDataFinished();
             }
         });
     }

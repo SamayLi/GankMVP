@@ -67,6 +67,12 @@ public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.ViewHold
     }
 
     public void setWelfareList(List<Welfare> datas) {
+        welfareList.clear();
+        welfareList.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void updateWelfareWithoutClear(List<Welfare> datas){
         welfareList.addAll(datas);
         notifyDataSetChanged();
     }

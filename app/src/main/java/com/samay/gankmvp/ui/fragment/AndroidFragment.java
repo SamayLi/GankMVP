@@ -50,6 +50,11 @@ public class AndroidFragment extends BaseSwipeRefreshFragment<AndroidPresenter> 
     }
 
     @Override
+    public void getDataFinished() {
+        hideRefresh();
+    }
+
+    @Override
     protected void onRefreshStarted() {
         mPresenter.load();
     }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface WelfareView extends BaseView {
     void load(String content);
     void fillDatas(List<Welfare> datas);
+    void fillDatasMore(List<Welfare> moreDatas);
 }

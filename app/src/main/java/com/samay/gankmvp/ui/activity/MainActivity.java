@@ -8,8 +8,10 @@ import android.support.v7.widget.Toolbar;
 import com.samay.gankmvp.R;
 import com.samay.gankmvp.adapter.FragmentAdapter;
 import com.samay.gankmvp.presenter.MainPresenter;
+import com.samay.gankmvp.ui.fragment.AllFragment;
 import com.samay.gankmvp.ui.fragment.AndroidFragment;
 import com.samay.gankmvp.ui.fragment.BaseFragment;
+import com.samay.gankmvp.ui.fragment.IOSFragment;
 import com.samay.gankmvp.ui.fragment.WelfareFragment;
 import com.samay.gankmvp.view.MainView;
 
@@ -54,8 +56,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         List<BaseFragment> fragmentList=new ArrayList<>();
         fragmentList.add(new WelfareFragment());
         fragmentList.add(new AndroidFragment());
-        fragmentList.add(new WelfareFragment());
-        fragmentList.add(new WelfareFragment());
+        fragmentList.add(new IOSFragment());
+        fragmentList.add(new AllFragment());
         FragmentAdapter adapter=new FragmentAdapter(getSupportFragmentManager(),fragmentList,titles);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
