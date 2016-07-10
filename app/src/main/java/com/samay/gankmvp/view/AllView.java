@@ -9,4 +9,7 @@ import java.util.List;
  */
 public interface AllView extends BaseView{
     void filldata(List<All> datas);
+    void fillMoreData(List<All> datas);
+    void getDataFinished();
+    void showRefreshView();
 }

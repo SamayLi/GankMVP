@@ -64,7 +64,15 @@ public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
     }
 
     public void setIosList(List<IOS> datas) {
-        this.iosList = datas;
+        iosList.clear();
+        iosList.addAll(datas);
         notifyDataSetChanged();
     }
+
+    public void updateListWithoutClear(List<IOS> datas){
+        iosList.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+
 }

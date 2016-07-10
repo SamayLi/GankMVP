@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 /**
  * Created by shaohua.li on 7/7/16.
  */
-public class WelfareFragment extends BaseFragment<WelfarePresenter> implements WelfareView {
+    public class WelfareFragment extends BaseSwipeRefreshFragment<WelfarePresenter> implements WelfareView {
 
     @BindView(R.id.rv_welfare)
     RecyclerView recyclerView;
@@ -47,6 +47,7 @@ public class WelfareFragment extends BaseFragment<WelfarePresenter> implements W
 
     @Override
     public void initView() {
+        initSwipeRefrashView();
         final StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -56,11 +57,11 @@ public class WelfareFragment extends BaseFragment<WelfarePresenter> implements W
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                super.onScrolled(recyclerView, dx, dy);
                 boolean isBottom =
                         layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1]
                                 >= adapter.getItemCount() - 4;
-                if(isBottom){
+                if(isBottom && !isRefreshing() && mPresenter.isHasMoreData()){
+                    showRefresh();
                     mPresenter.loadMore();
                 }
 
@@ -82,5 +83,25 @@ public class WelfareFragment extends BaseFragment<WelfarePresenter> implements W
     @Override
     public void fillDatasMore(List<Welfare> moreDatas) {
         adapter.updateWelfareWithoutClear(moreDatas);
+    }
+
+    @Override
+    public void getDataFinished() {
+        hideRefresh();
+    }
+
+    @Override
+    public void showRefreshView() {
+        showRefresh();
+    }
+
+    @Override
+    protected boolean prepareRefresh() {
+        return mPresenter.isHasMoreData();
+    }
+
+    @Override
+    protected void onRefreshStarted() {
+        mPresenter.load();
     }
 }

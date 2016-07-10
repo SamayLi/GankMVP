@@ -23,12 +23,17 @@ public class IOSPresenter implements BasePresenter<IOSView> {
 
     private IOSView mView;
 
+    int current_page=1;
+    final int page_size=10;
+
+
     public IOSPresenter(IOSView mView) {
         this.mView = mView;
     }
 
     @Override
     public void subscribe() {
+        mView.showRefreshView();
         load();
     }
 
@@ -51,13 +56,13 @@ public class IOSPresenter implements BasePresenter<IOSView> {
             @Override
             public void onCompleted() {
                 Log.d("samay@@@", "ios is completed");
-                hasLoadMoreData = true;
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d("samay@@@", "e is " + e.toString());
                 Log.d("samay@@@", "loadData error");
+                mView.getDataFinished();
             }
 
             @Override
@@ -67,16 +72,66 @@ public class IOSPresenter implements BasePresenter<IOSView> {
                 } else {
                     Log.d("samay@@@@", "ios is not null");
                     Log.d("samay@@@@", "ios size is " + ioses.size());
+                    if(ioses.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=true;
+                    }
                     mView.fillDatas(ioses);
+                    mView.getDataFinished();
                 }
             }
         });
     }
 
 
-    boolean hasLoadMoreData = false;
+    public void loadMore() {
+        InterntUtils interntUtils = new InterntUtils();
+        interntUtils.getGankAPI().getIOSs(page_size, current_page)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<IOSData, List<IOS>>() {
+                    @Override
+                    public List<IOS> call(IOSData iosData) {
+                        return iosData.results;
+                    }
+                }).subscribe(new Subscriber<List<IOS>>() {
+            @Override
+            public void onCompleted() {
+                Log.d("samay@@@", "ios is completed");
+            }
 
-    public boolean shouldRefillData() {
-        return !hasLoadMoreData;
+            @Override
+            public void onError(Throwable e) {
+                Log.d("samay@@@", "e is " + e.toString());
+                Log.d("samay@@@", "loadData error");
+                mView.getDataFinished();
+            }
+
+            @Override
+            public void onNext(List<IOS> ioses) {
+                if (ioses == null) {
+                    Log.d("samay@@@@", "ios is null");
+                } else {
+                    Log.d("samay@@@@", "ios is not null");
+                    Log.d("samay@@@@", "ios size is " + ioses.size());
+                    if(ioses.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=true;
+                    }
+                    mView.fillMoreDatas(ioses);
+                    mView.getDataFinished();
+                }
+            }
+        });
+    }
+
+
+    boolean hasLoadMoreData = true;
+
+
+    public boolean isHasLoadMoreData() {
+        return hasLoadMoreData;
     }
 }

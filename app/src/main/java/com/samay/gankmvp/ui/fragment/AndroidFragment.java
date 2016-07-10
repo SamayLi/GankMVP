@@ -37,16 +37,35 @@ public class AndroidFragment extends BaseSwipeRefreshFragment<AndroidPresenter> 
     @Override
     public void initView() {
         initSwipeRefrashView();
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity().getBaseContext());
+        final LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter=new AndroidAdapter(getContext());
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                boolean isBottom =
+                        layoutManager.findLastCompletelyVisibleItemPosition()
+                                >= adapter.getItemCount() - 3;
+                if(isBottom && !isRefreshing() && mPresenter.shouldRefillData()){
+                    showRefresh();
+                    mPresenter.loadMore();
+                }
+
+            }
+        });
     }
 
     @Override
     public void fillDatas(List<Android> androidList) {
         Log.d("samay@@@Android","android List size is "+androidList.size());
         adapter.setAndroidDataList(androidList);
+    }
+
+    @Override
+    public void fillMoreDatas(List<Android> androidList) {
+        adapter.updateAllWithoutClear(androidList);
     }
 
     @Override
@@ -63,4 +82,10 @@ public class AndroidFragment extends BaseSwipeRefreshFragment<AndroidPresenter> 
     protected boolean prepareRefresh() {
         return mPresenter.shouldRefillData();
     }
+
+    @Override
+    public void showRefreshView() {
+        showRefresh();
+    }
+
 }

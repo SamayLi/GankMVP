@@ -36,15 +36,39 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
     @Override
     public void initView() {
         initSwipeRefrashView();
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         iosAdapter=new IOSAdapter(getContext());
         recyclerView.setAdapter(iosAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                boolean isBottom =
+                        layoutManager.findFirstCompletelyVisibleItemPosition()
+                                >= iosAdapter.getItemCount() - 2;
+                if(isBottom && !isRefreshing() && mPresenter.isHasLoadMoreData()){
+                    showRefresh();
+                    mPresenter.loadMore();
+                }
+
+            }
+        });
     }
 
     @Override
     public void fillDatas(List<IOS> datas) {
         iosAdapter.setIosList(datas);
+    }
+
+    @Override
+    public void fillMoreDatas(List<IOS> datas) {
+        iosAdapter.updateListWithoutClear(datas);
+    }
+
+    @Override
+    public void getDataFinished() {
+        hideRefresh();
     }
 
     @Override
@@ -54,6 +78,12 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
 
     @Override
     protected boolean prepareRefresh() {
-        return mPresenter.shouldRefillData();
+        return mPresenter.isHasLoadMoreData();
     }
+
+    @Override
+    public void showRefreshView() {
+        showRefresh();
+    }
+
 }

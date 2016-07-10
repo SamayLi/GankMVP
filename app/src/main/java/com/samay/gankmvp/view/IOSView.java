@@ -10,4 +10,7 @@ import java.util.List;
 public interface IOSView extends BaseView{
 
     void fillDatas(List<IOS> datas);
+    void fillMoreDatas(List<IOS> datas);
+    void getDataFinished();
+    void showRefreshView();
 }

@@ -36,11 +36,25 @@ public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implemen
     @Override
     public void initView() {
         initSwipeRefrashView();
-        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         allAdapter=new AllAdapter(getContext());
         recyclerView.setAdapter(allAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                boolean isBottom =
+                        layoutManager.findLastCompletelyVisibleItemPosition()
+                                >= allAdapter.getItemCount() - 3;
+                if(isBottom && !isRefreshing() && mPresenter.shouldRefillData()){
+                    showRefresh();
+                    mPresenter.loadMore();
+                }
+
+            }
+        });
     }
 
     @Override
@@ -51,6 +65,21 @@ public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implemen
     @Override
     public void filldata(List<All> datas) {
         allAdapter.setAllList(datas);
+    }
+
+    @Override
+    public void fillMoreData(List<All> datas) {
+        allAdapter.updateAllListWithoutClear(datas);
+    }
+
+    @Override
+    public void getDataFinished() {
+        hideRefresh();
+    }
+
+    @Override
+    public void showRefreshView() {
+        showRefresh();
     }
 
     @Override

@@ -10,5 +10,7 @@ import java.util.List;
 public interface AndroidView extends BaseView {
 
     void fillDatas(List<Android> androidList);
+    void fillMoreDatas(List<Android> androidList);
     void getDataFinished();
+    void showRefreshView();
 }

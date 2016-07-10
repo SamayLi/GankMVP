@@ -33,7 +33,8 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
 
     @Override
     public void subscribe() {
-
+        mView.showRefreshView();
+        load();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
 
     public void load() {
         InterntUtils interntUtils = new InterntUtils();
-        interntUtils.getGankAPI().getAndroids(page_size, current_page)
+        interntUtils.getGankAPI().getAndroids(10, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<AndroidData, List<Android>>() {
@@ -55,7 +56,6 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
             @Override
             public void onCompleted() {
                 Log.d("samay@@@", "android is completed");
-                hasLoadMoreData = true;
             }
 
             @Override
@@ -72,6 +72,11 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
                 } else {
                     Log.d("samay@@@@", "androids is not null");
                     Log.d("samay@@@@", "androids size is " + androids.size());
+                    if(androids.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=false;
+                    }
                     mView.fillDatas(androids);
                 }
                 mView.getDataFinished();
@@ -79,10 +84,53 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
         });
     }
 
+    public void loadMore() {
+        InterntUtils interntUtils = new InterntUtils();
+        interntUtils.getGankAPI().getAndroids(page_size, current_page)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<AndroidData, List<Android>>() {
+                    @Override
+                    public List<Android> call(AndroidData androidData) {
+                        return androidData.results;
+                    }
+                }).subscribe(new Subscriber<List<Android>>() {
+            @Override
+            public void onCompleted() {
+                Log.d("samay@@@", "android is completed");
+            }
 
-    boolean hasLoadMoreData = false;
+            @Override
+            public void onError(Throwable e) {
+                Log.d("samay@@@", "e is " + e.toString());
+                Log.d("samay@@@", "loadData error");
+                mView.getDataFinished();
+            }
+
+            @Override
+            public void onNext(List<Android> androids) {
+                if (androids == null) {
+                    Log.d("samay@@@@", "androids is null");
+                } else {
+                    Log.d("samay@@@@", "androids is not null");
+                    Log.d("samay@@@@", "androids size is " + androids.size());
+                    if(androids.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=false;
+                    }
+                    mView.fillMoreDatas(androids);
+                }
+                mView.getDataFinished();
+            }
+        });
+    }
+
+
+
+    boolean hasLoadMoreData = true;
 
     public boolean shouldRefillData() {
-        return !hasLoadMoreData;
+        return hasLoadMoreData;
     }
 }

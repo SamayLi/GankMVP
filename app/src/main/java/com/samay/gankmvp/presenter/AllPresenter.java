@@ -22,6 +22,9 @@ import rx.schedulers.Schedulers;
  */
 public class AllPresenter implements BasePresenter<AllView> {
     private AllView mView;
+    int current_page=1;
+    final int page_size=10;
+
 
     public AllPresenter(AllView mView) {
         this.mView = mView;
@@ -29,6 +32,7 @@ public class AllPresenter implements BasePresenter<AllView> {
 
     @Override
     public void subscribe() {
+        mView.showRefreshView();
         load();
     }
 
@@ -51,12 +55,13 @@ public class AllPresenter implements BasePresenter<AllView> {
             @Override
             public void onCompleted() {
                 Logger.d("AllPresenter --> all  is completed");
-                hasLoadMoreData = true;
+
             }
 
             @Override
             public void onError(Throwable e) {
                 Logger.d("AllPresenter --> error "+e.getMessage());
+                mView.getDataFinished();
             }
 
             @Override
@@ -65,16 +70,64 @@ public class AllPresenter implements BasePresenter<AllView> {
                     Logger.v("alls is null");
                 } else {
                    Logger.v("alls size is "+alls.size());
+                    if(alls.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=false;
+                    }
                     mView.filldata(alls);
+                    mView.getDataFinished();
                 }
             }
         });
     }
 
 
-    boolean hasLoadMoreData = false;
+    public void loadMore() {
+        InterntUtils interntUtils = new InterntUtils();
+        interntUtils.getGankAPI().getALLs(page_size, current_page)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<AllData, List<All>>() {
+                    @Override
+                    public List<All> call(AllData allData) {
+                        return allData.results;
+                    }
+                }).subscribe(new Subscriber<List<All>>() {
+            @Override
+            public void onCompleted() {
+                Logger.d("AllPresenter --> all  is completed");
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Logger.d("AllPresenter --> error "+e.getMessage());
+                mView.getDataFinished();
+            }
+
+            @Override
+            public void onNext(List<All> alls) {
+                if (alls == null) {
+                    Logger.v("alls is null");
+                } else {
+                    Logger.v("alls size is "+alls.size());
+                    if(alls.size()==10){
+                        current_page++;
+                    }else {
+                        hasLoadMoreData=false;
+                    }
+                    mView.fillMoreData(alls);
+                    mView.getDataFinished();
+                }
+            }
+        });
+    }
+
+
+    boolean hasLoadMoreData = true;
 
     public boolean shouldRefillData() {
-        return !hasLoadMoreData;
+        return hasLoadMoreData;
     }
 }

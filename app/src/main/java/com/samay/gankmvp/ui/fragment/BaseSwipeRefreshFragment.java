@@ -32,10 +32,6 @@ public abstract class BaseSwipeRefreshFragment<P extends BasePresenter> extends 
         });
     }
 
-    @Override
-    public void getDataFinish() {
-        hideRefresh();
-    }
 
     @Override
     public void showEmptyView() {
@@ -52,9 +48,7 @@ public abstract class BaseSwipeRefreshFragment<P extends BasePresenter> extends 
      * check data status
      * @return return true indicate it should load data really else indicate don't refresh
      */
-    protected boolean prepareRefresh(){
-        return false;
-    }
+    protected  abstract boolean prepareRefresh();
 
     /**
      * the method of get data
@@ -73,4 +67,16 @@ public abstract class BaseSwipeRefreshFragment<P extends BasePresenter> extends 
             }
         },1000);
     }
+
+    @Override
+    public boolean isRefreshing() {
+        return swipeRefreshLayout.isRefreshing();
+    }
+
+    @Override
+    public void showRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
 }
+
+

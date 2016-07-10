@@ -23,6 +23,11 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
     int current_page=1;
     int page_size=10;
     private WelfareView mView;
+    private boolean isHasMoreData=true;
+
+    public boolean isHasMoreData() {
+        return isHasMoreData;
+    }
 
     public WelfarePresenter(WelfareView mView) {
         this.mView = mView;
@@ -30,6 +35,7 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
 
     @Override
     public void subscribe() {
+        mView.showRefreshView();
         load();
     }
 
@@ -73,6 +79,7 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
                         current_page++;
                     }
                     mView.fillDatas(welfares);
+                    mView.getDataFinished();
                 }
             }
         });
@@ -81,8 +88,8 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
 
     public void loadMore() {
         mView.load("This is test");
-        InterntUtils interntUtils = new InterntUtils();
-        interntUtils.getGankAPI().getWelfare(10, 1)
+        final InterntUtils interntUtils = new InterntUtils();
+        interntUtils.getGankAPI().getWelfare(page_size , current_page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<WelfareData, List<Welfare>>() {
@@ -100,6 +107,7 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
             public void onError(Throwable e) {
                 Log.d("samay@@@loadMore", "e is " + e.toString());
                 Log.d("samay@@@loadMore", "loadData error");
+                mView.getDataFinished();
             }
 
             @Override
@@ -111,8 +119,11 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
                     Log.d("samay@@@@loadMore","welfares size is "+welfares.size());
                     if(welfares.size()==page_size){
                         current_page++;
+                    }else {
+                        isHasMoreData=false;
                     }
                     mView.fillDatasMore(welfares);
+                    mView.getDataFinished();
                 }
             }
         });

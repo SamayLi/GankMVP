@@ -66,7 +66,13 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
     }
 
     public void setAllList(List<All> datas) {
-        this.allList = datas;
+        allList.clear();
+        allList.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void updateAllListWithoutClear(List<All> datas){
+        allList.addAll(datas);
         notifyDataSetChanged();
     }
 }
