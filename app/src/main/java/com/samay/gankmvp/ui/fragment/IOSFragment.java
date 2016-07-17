@@ -5,9 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.samay.gankmvp.R;
+import com.samay.gankmvp.adapter.IItemClickListener;
 import com.samay.gankmvp.adapter.IOSAdapter;
 import com.samay.gankmvp.mode.entity.IOS;
 import com.samay.gankmvp.presenter.IOSPresenter;
+import com.samay.gankmvp.ui.activity.WebActivity;
 import com.samay.gankmvp.view.IOSView;
 
 import java.util.List;
@@ -17,7 +19,7 @@ import butterknife.BindView;
 /**
  * Created by shaohua.li on 7/8/16.
  */
-public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implements IOSView{
+public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implements IOSView,IItemClickListener{
     @BindView(R.id.rv_ios)
     RecyclerView recyclerView;
 
@@ -54,6 +56,7 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
 
             }
         });
+        iosAdapter.setListener(this);
     }
 
     @Override
@@ -86,4 +89,8 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
         showRefresh();
     }
 
+    @Override
+    public void itemClick(String url, String title) {
+        WebActivity.gotoWebActivity(getContext(),url,title);
+    }
 }

@@ -24,7 +24,11 @@ public class AndroidAdapter extends RecyclerView.Adapter<AndroidAdapter.ViewHold
     List<Android> androidDataList;
     Context mContext;
     LayoutInflater inflater;
+    IItemClickListener listener;
 
+    public void setListener(IItemClickListener listener) {
+        this.listener = listener;
+    }
     public AndroidAdapter(Context mContext) {
         this.mContext = mContext;
         androidDataList=new ArrayList<>();
@@ -39,9 +43,15 @@ public class AndroidAdapter extends RecyclerView.Adapter<AndroidAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Android android=androidDataList.get(position);
+        final Android android=androidDataList.get(position);
         holder.mTitleView.setText(android.getDesc());
         holder.mAuthorView.setText("author:"+android.getWho());
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.itemClick(android.getUrl(),android.getDesc());
+            }
+        });
     }
 
 
@@ -56,9 +66,15 @@ public class AndroidAdapter extends RecyclerView.Adapter<AndroidAdapter.ViewHold
 
         @BindView(R.id.iv_android_author)
         TextView mAuthorView;
+        View view;
+
+        public View getView() {
+            return view;
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
+            view=itemView;
             ButterKnife.bind(this,itemView);
         }
     }

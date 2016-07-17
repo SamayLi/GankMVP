@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 
 import com.samay.gankmvp.R;
 import com.samay.gankmvp.adapter.AllAdapter;
+import com.samay.gankmvp.adapter.IItemClickListener;
 import com.samay.gankmvp.mode.entity.All;
 import com.samay.gankmvp.presenter.AllPresenter;
+import com.samay.gankmvp.ui.activity.WebActivity;
 import com.samay.gankmvp.view.AllView;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import butterknife.BindView;
 /**
  * Created by shaohua.li on 7/8/16.
  */
-public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implements AllView{
+public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implements AllView,IItemClickListener{
 
     @BindView(R.id.rv_all)
     RecyclerView recyclerView;
@@ -55,6 +57,7 @@ public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implemen
 
             }
         });
+        allAdapter.setListener(this);
     }
 
     @Override
@@ -85,5 +88,10 @@ public class AllFragment extends BaseSwipeRefreshFragment<AllPresenter> implemen
     @Override
     protected boolean prepareRefresh() {
         return mPresenter.shouldRefillData();
+    }
+
+    @Override
+    public void itemClick(String url, String title) {
+        WebActivity.gotoWebActivity(getContext(),url,title);
     }
 }

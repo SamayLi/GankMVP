@@ -16,7 +16,9 @@ import com.samay.gankmvp.adapter.HomeAdapter;
 import com.samay.gankmvp.adapter.WelfareAdapter;
 import com.samay.gankmvp.mode.entity.Welfare;
 import com.samay.gankmvp.presenter.WelfarePresenter;
+import com.samay.gankmvp.ui.activity.WelfareDetailViewActivity;
 import com.samay.gankmvp.view.WelfareView;
+import com.samay.gankmvp.widget.RatioImageView;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ import butterknife.ButterKnife;
 /**
  * Created by shaohua.li on 7/7/16.
  */
-    public class WelfareFragment extends BaseSwipeRefreshFragment<WelfarePresenter> implements WelfareView {
+    public class WelfareFragment extends BaseSwipeRefreshFragment<WelfarePresenter> implements WelfareView,WelfareAdapter.IItemClickLister {
 
     @BindView(R.id.rv_welfare)
     RecyclerView recyclerView;
@@ -67,6 +69,7 @@ import butterknife.ButterKnife;
 
             }
         });
+        adapter.setLister(this);
     }
 
     @Override
@@ -103,5 +106,10 @@ import butterknife.ButterKnife;
     @Override
     protected void onRefreshStarted() {
         mPresenter.load();
+    }
+
+    @Override
+    public void itemClick(String url, String s, RatioImageView ratioImageView, TextView welfareText) {
+        WelfareDetailViewActivity.gotoWatchGirlDetail(getActivity(),url,s,ratioImageView,welfareText);
     }
 }

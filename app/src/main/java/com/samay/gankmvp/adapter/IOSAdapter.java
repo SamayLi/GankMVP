@@ -26,6 +26,11 @@ public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
     public List<IOS> iosList;
     public Context mContext;
     public LayoutInflater inflater;
+    IItemClickListener listener;
+
+    public void setListener(IItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public IOSAdapter(Context mContext) {
         this.mContext = mContext;
@@ -41,9 +46,15 @@ public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        IOS ios=iosList.get(position);
+        final IOS ios=iosList.get(position);
         holder.author.setText(ios.getWho());
         holder.title.setText(ios.getDesc());
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.itemClick(ios.getUrl(),ios.getDesc());
+            }
+        });
     }
 
     @Override
@@ -56,9 +67,15 @@ public class IOSAdapter extends RecyclerView.Adapter<IOSAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.tv_ios_author)
         TextView author;
+        View view;
+
+        public View getView() {
+            return view;
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
+            view=itemView;
             ButterKnife.bind(this,itemView);
         }
     }

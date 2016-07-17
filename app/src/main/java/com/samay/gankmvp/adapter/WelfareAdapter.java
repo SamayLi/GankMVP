@@ -28,6 +28,17 @@ public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.ViewHold
     private List<Welfare> welfareList;
     private LayoutInflater inflater;
 
+
+    public interface IItemClickLister{
+        void itemClick(String url, String s, RatioImageView ratioImageView, TextView welfareText);
+    }
+
+    private IItemClickLister lister;
+
+    public void setLister(IItemClickLister lister) {
+        this.lister = lister;
+    }
+
     public WelfareAdapter(Context context) {
         mContext = context;
         welfareList = new ArrayList<>();
@@ -41,10 +52,16 @@ public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Welfare welfare = welfareList.get(position);
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
+        final Welfare welfare = welfareList.get(position);
         viewHolder.welfareText.setText(DateUtils.toDate(welfare.getPublishedAt()));
         Glide.with(mContext).load(welfare.getUrl()).centerCrop().into(viewHolder.ratioImageView);
+        viewHolder.ratioImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lister.itemClick(welfare.getUrl(),DateUtils.toDate(welfare.getPublishedAt()),viewHolder.ratioImageView,viewHolder.welfareText);
+            }
+        });
     }
 
     @Override
@@ -64,6 +81,7 @@ public class WelfareAdapter extends RecyclerView.Adapter<WelfareAdapter.ViewHold
             ButterKnife.bind(this, itemView);
             ratioImageView.setOriginalSize(50,50);
         }
+
     }
 
     public void setWelfareList(List<Welfare> datas) {

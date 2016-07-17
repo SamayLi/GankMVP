@@ -26,8 +26,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
-        initView();
         initPresenter();
+        initView();
     }
 
     @Override

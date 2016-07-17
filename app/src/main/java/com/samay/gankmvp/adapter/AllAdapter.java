@@ -28,6 +28,12 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
     LayoutInflater inflater;
 
+    IItemClickListener listener;
+
+    public void setListener(IItemClickListener listener) {
+        this.listener = listener;
+    }
+
     public AllAdapter(Context mContext) {
         this.mContext = mContext;
         allList=new ArrayList<>();
@@ -42,9 +48,15 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        All all=allList.get(position);
+        final All all=allList.get(position);
         holder.author.setText(all.getWho());
         holder.title.setText(all.getDesc());
+        holder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.itemClick(all.getUrl(),all.getDesc());
+            }
+        });
     }
 
     @Override
@@ -58,9 +70,15 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
         @BindView(R.id.tv_all_author)
         TextView author;
 
+        View view;
+
+        public View getView() {
+            return view;
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
+            view=itemView;
             ButterKnife.bind(this,itemView);
         }
     }
