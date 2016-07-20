@@ -8,32 +8,32 @@ import android.util.Log;
 import com.samay.gankmvp.R;
 import com.samay.gankmvp.adapter.IItemClickListener;
 import com.samay.gankmvp.adapter.IOSAdapter;
-import com.samay.gankmvp.mode.entity.IOS;
-import com.samay.gankmvp.presenter.IOSPresenter;
+import com.samay.gankmvp.adapter.VideoAdapter;
+import com.samay.gankmvp.mode.entity.Video;
+import com.samay.gankmvp.presenter.VideoPresenter;
 import com.samay.gankmvp.ui.activity.WebActivity;
-import com.samay.gankmvp.view.IOSView;
+import com.samay.gankmvp.view.VideoView;
 
 import java.util.List;
-
 import butterknife.BindView;
 
 /**
- * Created by shaohua.li on 7/8/16.
+ * Created by shaohua.li on 7/20/16.
  */
-public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implements IOSView,IItemClickListener{
-    @BindView(R.id.rv_ios)
+public class VideoFragment extends BaseSwipeRefreshFragment<VideoPresenter> implements VideoView,IItemClickListener {
+    @BindView(R.id.rv_video)
     RecyclerView recyclerView;
 
-    IOSAdapter iosAdapter;
+    VideoAdapter videoAdapter;
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_ios;
+        return R.layout.fragment_video;
     }
 
     @Override
     public void initPresenter() {
-        mPresenter=new IOSPresenter(this);
+        mPresenter=new VideoPresenter(this);
     }
 
     @Override
@@ -41,35 +41,40 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
         initSwipeRefrashView();
         final LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        iosAdapter=new IOSAdapter(getContext());
-        recyclerView.setAdapter(iosAdapter);
+        videoAdapter=new VideoAdapter(getContext());
+        recyclerView.setAdapter(videoAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 boolean isBottom =
                         layoutManager.findLastCompletelyVisibleItemPosition()
-                                >= iosAdapter.getItemCount() - 3;
-                Log.d("samay@@@","isBottom is "+isBottom);
-                if (isBottom && !isRefreshing() && mPresenter.shouldRefillData()) {
-                    Log.d("samay@@@","recycler View is refresh");
+                                >= videoAdapter.getItemCount() - 3;
+                Log.d("samay@@@", "isBottom is " + isBottom);
+                if (isBottom && !isRefreshing() && mPresenter.isHasLoadMoreData()) {
+                    Log.d("samay@@@", "recycler View is refresh");
                     showRefresh();
                     mPresenter.loadMore();
                 }
 
             }
         });
-        iosAdapter.setListener(this);
+        videoAdapter.setListener(this);
     }
 
     @Override
-    public void fillDatas(List<IOS> datas) {
-        iosAdapter.setIosList(datas);
+    public void itemClick(String url, String title) {
+        WebActivity.gotoWebActivity(getContext(), url, title);
     }
 
     @Override
-    public void fillMoreDatas(List<IOS> datas) {
-        iosAdapter.updateListWithoutClear(datas);
+    public void fillDatas(List<Video> datas) {
+        videoAdapter.setVideoList(datas);
+    }
+
+    @Override
+    public void fillMoreDatas(List<Video> datas) {
+        videoAdapter.updateListWithoutClear(datas);
     }
 
     @Override
@@ -78,22 +83,17 @@ public class IOSFragment extends BaseSwipeRefreshFragment<IOSPresenter> implemen
     }
 
     @Override
-    protected void onRefreshStarted() {
+    public void showRefreshView() {
         mPresenter.load();
     }
 
     @Override
     protected boolean prepareRefresh() {
-        return mPresenter.shouldRefillData();
+        return mPresenter.isHasLoadMoreData();
     }
 
     @Override
-    public void showRefreshView() {
-        showRefresh();
-    }
-
-    @Override
-    public void itemClick(String url, String title) {
-        WebActivity.gotoWebActivity(getContext(),url,title);
+    protected void onRefreshStarted() {
+        mPresenter.load();
     }
 }

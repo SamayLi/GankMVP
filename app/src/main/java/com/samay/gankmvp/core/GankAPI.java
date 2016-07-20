@@ -3,6 +3,7 @@ package com.samay.gankmvp.core;
 import com.samay.gankmvp.mode.AllData;
 import com.samay.gankmvp.mode.AndroidData;
 import com.samay.gankmvp.mode.IOSData;
+import com.samay.gankmvp.mode.VideoData;
 import com.samay.gankmvp.mode.WelfareData;
 
 import retrofit2.http.GET;
@@ -24,4 +25,7 @@ public interface GankAPI {
 
     @GET("data/福利/{pagesize}/{page}")
     Observable<WelfareData> getWelfare(@Path("pagesize") int pagesize,@Path("page") int page);
+
+    @GET("data/休息视频/{pagesize}/{page}")
+    Observable<VideoData> getVideo(@Path("pagesize") int pagesize,@Path("page") int page);
 }

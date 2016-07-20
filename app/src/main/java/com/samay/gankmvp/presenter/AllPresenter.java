@@ -42,6 +42,7 @@ public class AllPresenter implements BasePresenter<AllView> {
     }
 
     public void load() {
+        current_page=1;
         InterntUtils interntUtils = new InterntUtils();
         interntUtils.getGankAPI().getALLs(10, 1)
                 .observeOn(AndroidSchedulers.mainThread())

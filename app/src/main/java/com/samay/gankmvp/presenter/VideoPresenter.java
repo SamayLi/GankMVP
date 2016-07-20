@@ -2,12 +2,10 @@ package com.samay.gankmvp.presenter;
 
 import android.util.Log;
 
-import com.samay.gankmvp.mode.AndroidData;
-import com.samay.gankmvp.mode.WelfareData;
-import com.samay.gankmvp.mode.entity.Android;
-import com.samay.gankmvp.mode.entity.Welfare;
+import com.samay.gankmvp.mode.VideoData;
+import com.samay.gankmvp.mode.entity.Video;
 import com.samay.gankmvp.utils.InterntUtils;
-import com.samay.gankmvp.view.AndroidView;
+import com.samay.gankmvp.view.VideoView;
 
 import java.util.List;
 
@@ -17,18 +15,16 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by shaohua.li on 7/8/16.
+ * Created by shaohua.li on 7/20/16.
  */
-public class AndroidPresenter implements BasePresenter<AndroidView> {
+public class VideoPresenter implements BasePresenter<VideoView> {
 
+    private VideoView mView;
     int current_page=1;
     final int page_size=10;
 
-    private AndroidView mView;
-
-
-    public AndroidPresenter(AndroidView view) {
-        mView = view;
+    public VideoPresenter(VideoView mView) {
+        this.mView = mView;
     }
 
     @Override
@@ -41,22 +37,21 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
     public void unsubscribe() {
 
     }
-
     public void load() {
         current_page=1;
         InterntUtils interntUtils = new InterntUtils();
-        interntUtils.getGankAPI().getAndroids(10, 1)
+        interntUtils.getGankAPI().getVideo(10, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<AndroidData, List<Android>>() {
+                .map(new Func1<VideoData, List<Video>>() {
                     @Override
-                    public List<Android> call(AndroidData androidData) {
-                        return androidData.results;
+                    public List<Video> call(VideoData videoData) {
+                        return videoData.results;
                     }
-                }).subscribe(new Subscriber<List<Android>>() {
+                }).subscribe(new Subscriber<List<Video>>() {
             @Override
             public void onCompleted() {
-                Log.d("samay@@@", "android is completed");
+                Log.d("samay@@@", "video is completed");
             }
 
             @Override
@@ -67,38 +62,37 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
             }
 
             @Override
-            public void onNext(List<Android> androids) {
-                if (androids == null) {
-                    Log.d("samay@@@@", "androids is null");
+            public void onNext(List<Video> videos) {
+                if (videos == null) {
+                    Log.d("samay@@@@", "video is null");
                 } else {
-                    Log.d("samay@@@@", "androids is not null");
-                    Log.d("samay@@@@", "androids size is " + androids.size());
-                    if(androids.size()==10){
+                    Log.d("samay@@@@", "video is not null");
+                    Log.d("samay@@@@", "video size is " + videos.size());
+                    if(videos.size()==10){
                         current_page++;
-                    }else {
-                        hasLoadMoreData=false;
                     }
-                    mView.fillDatas(androids);
+                    mView.fillDatas(videos);
                 }
                 mView.getDataFinished();
             }
         });
     }
+
 
     public void loadMore() {
         InterntUtils interntUtils = new InterntUtils();
-        interntUtils.getGankAPI().getAndroids(page_size, current_page)
+        interntUtils.getGankAPI().getVideo(page_size, current_page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<AndroidData, List<Android>>() {
+                .map(new Func1<VideoData, List<Video>>() {
                     @Override
-                    public List<Android> call(AndroidData androidData) {
-                        return androidData.results;
+                    public List<Video> call(VideoData videoData) {
+                        return videoData.results;
                     }
-                }).subscribe(new Subscriber<List<Android>>() {
+                }).subscribe(new Subscriber<List<Video>>() {
             @Override
             public void onCompleted() {
-                Log.d("samay@@@", "android is completed");
+                Log.d("samay@@@", "video is completed");
             }
 
             @Override
@@ -109,29 +103,29 @@ public class AndroidPresenter implements BasePresenter<AndroidView> {
             }
 
             @Override
-            public void onNext(List<Android> androids) {
-                if (androids == null) {
-                    Log.d("samay@@@@", "androids is null");
+            public void onNext(List<Video> videos) {
+                if (videos == null) {
+                    Log.d("samay@@@@", "video is null");
                 } else {
-                    Log.d("samay@@@@", "androids is not null");
-                    Log.d("samay@@@@", "androids size is " + androids.size());
-                    if(androids.size()==10){
+                    Log.d("samay@@@@", "video is not null");
+                    Log.d("samay@@@@", "video size is " + videos.size());
+                    if(videos.size()==10){
                         current_page++;
                     }else {
                         hasLoadMoreData=false;
                     }
-                    mView.fillMoreDatas(androids);
+                    mView.fillMoreDatas(videos);
+                    mView.getDataFinished();
                 }
-                mView.getDataFinished();
             }
         });
     }
-
 
 
     boolean hasLoadMoreData = true;
 
-    public boolean shouldRefillData() {
+
+    public boolean isHasLoadMoreData() {
         return hasLoadMoreData;
     }
 }

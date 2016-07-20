@@ -74,8 +74,6 @@ public class IOSPresenter implements BasePresenter<IOSView> {
                     Log.d("samay@@@@", "ios size is " + ioses.size());
                     if(ioses.size()==10){
                         current_page++;
-                    }else {
-                        hasLoadMoreData=true;
                     }
                     mView.fillDatas(ioses);
                     mView.getDataFinished();
@@ -118,7 +116,7 @@ public class IOSPresenter implements BasePresenter<IOSView> {
                     if(ioses.size()==10){
                         current_page++;
                     }else {
-                        hasLoadMoreData=true;
+                        hasLoadMoreData=false;
                     }
                     mView.fillMoreDatas(ioses);
                     mView.getDataFinished();
@@ -131,7 +129,7 @@ public class IOSPresenter implements BasePresenter<IOSView> {
     boolean hasLoadMoreData = true;
 
 
-    public boolean isHasLoadMoreData() {
+    public boolean shouldRefillData() {
         return hasLoadMoreData;
     }
 }

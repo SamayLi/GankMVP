@@ -46,6 +46,7 @@ public class WelfarePresenter implements BasePresenter<WelfareView> {
 
 
     public void load() {
+        current_page=1;
         mView.load("This is test");
         InterntUtils interntUtils = new InterntUtils();
         interntUtils.getGankAPI().getWelfare(10, 1)

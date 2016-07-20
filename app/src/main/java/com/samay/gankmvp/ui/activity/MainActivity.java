@@ -12,6 +12,7 @@ import com.samay.gankmvp.ui.fragment.AllFragment;
 import com.samay.gankmvp.ui.fragment.AndroidFragment;
 import com.samay.gankmvp.ui.fragment.BaseFragment;
 import com.samay.gankmvp.ui.fragment.IOSFragment;
+import com.samay.gankmvp.ui.fragment.VideoFragment;
 import com.samay.gankmvp.ui.fragment.WelfareFragment;
 import com.samay.gankmvp.view.MainView;
 
@@ -49,15 +50,18 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         titles.add("Android");
         titles.add("IOS");
         titles.add("ALL");
+        titles.add("Video");
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(3)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(4)));
         List<BaseFragment> fragmentList=new ArrayList<>();
         fragmentList.add(new WelfareFragment());
         fragmentList.add(new AndroidFragment());
         fragmentList.add(new IOSFragment());
         fragmentList.add(new AllFragment());
+        fragmentList.add(new VideoFragment());
         FragmentAdapter adapter=new FragmentAdapter(getSupportFragmentManager(),fragmentList,titles);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
